@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no">
+
+<title>JARVIS Phone Optimizer</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #02070d;
+    color: #56e7ff;
+    font-family: Arial, sans-serif;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+
+    background:
+        linear-gradient(
+            rgba(0,220,255,.035) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(0,220,255,.035) 1px,
+            transparent 1px
+        );
+
+    background-size: 28px 28px;
+    pointer-events: none;
+}
+
+.wrap {
+    max-width: 760px;
+    margin: auto;
+    padding: 18px;
+}
+
+.top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    border-bottom: 1px solid #12485a;
+    padding-bottom: 10px;
+}
+
+.logo {
+    font-size: 25px;
+    font-weight: 800;
+    letter-spacing: 5px;
+    text-shadow: 0 0 15px #00d9ff;
+}
+
+.status {
+    font-size: 10px;
+    color: #78ffbf;
+}
+
+.arc {
+    height: 160px;
+    width: 160px;
+
+    margin: 22px auto;
+
+    border: 2px solid #24dfff;
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 30px #00bfff55,
+        inset 0 0 30px #00bfff33;
+
+    display: grid;
+    place-items: center;
+
+    position: relative;
+}
+
+.arc::after {
+    content: "";
+
+    position: absolute;
+    inset: 15px;
+
+    border: 1px dashed #27dfff;
+    border-radius: 50%;
+
+    animation: spin 9s linear infinite;
+}
+
+.core {
+    font-size: 35px;
+    font-weight: 900;
+
+    text-align: center;
+
+    text-shadow: 0 0 18px #00eaff;
+}
+
+.sub {
+    text-align: center;
+    font-size: 9px;
+    letter-spacing: 3px;
+}
+
+.grid {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 10px;
+}
+
+.card {
+    border: 1px solid #11566a;
+
+    background: #06131bde;
+
+    padding: 13px;
+
+    border-radius: 10px;
+
+    box-shadow:
+        inset 0 0 20px #00bfff08;
+}
+
+.label {
+    font-size: 10px;
+
+    color: #75aebb;
+
+    letter-spacing: 1.5px;
+}
+
+.val {
+    font-size: 19px;
+
+    margin-top: 7px;
+
+    font-weight: 700;
+}
+
+.small {
+    font-size: 11px;
+
+    color: #9defff;
+
+    margin-top: 5px;
+}
+
+button {
+    width: 100%;
+
+    margin-top: 12px;
+
+    padding: 13px;
+
+    border: 1px solid #24dfff;
+
+    background: #06212b;
+
+    color: #7feeff;
+
+    border-radius: 8px;
+
+    font-weight: 700;
+
+    letter-spacing: 1px;
+}
+
+button:active {
+    background: #0b3b4a;
+}
+
+.footer {
+    text-align: center;
+
+    color: #427887;
+
+    font-size: 9px;
+
+    margin-top: 18px;
+}
+
+@keyframes spin {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+@media(min-width:600px) {
+
+    .grid {
+        grid-template-columns:
+            repeat(3, 1fr);
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+    <div class="top">
+
+        <div class="logo">
+            JARVIS
+        </div>
+
+        <div class="status" id="status">
+            INITIALIZING
+        </div>
+
+    </div>
+
+
+    <div class="arc">
+
+        <div>
+
+            <div class="core" id="battery">
+                --%
+            </div>
+
+            <div class="sub">
+                SYSTEM CORE
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="grid">
+
+
+        <div class="card">
+
+            <div class="label">
+                RAM USED
+            </div>
+
+            <div class="val" id="ram">
+                --
+            </div>
+
+            <div class="small" id="ramInfo">
+                Waiting for native data
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="label">
+                STORAGE
+            </div>
+
+            <div class="val" id="storage">
+                --
+            </div>
+
+            <div class="small" id="storageInfo">
+                Internal storage
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="label">
+                BATTERY TEMP
+            </div>
+
+            <div class="val" id="temperature">
+                --
+            </div>
+
+            <div class="small">
+                Battery sensor
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="label">
+                NETWORK
+            </div>
+
+            <div class="val" id="network">
+                --
+            </div>
+
+            <div class="small">
+                Connectivity
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="label">
+                DATE
+            </div>
+
+            <div class="val" id="date">
+                --
+            </div>
+
+            <div class="small" id="time">
+                --
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="label">
+                SYSTEM
+            </div>
+
+            <div class="val" id="system">
+                READY
+            </div>
+
+            <div class="small">
+                Native Android
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <button onclick="scanSystem()">
+        SCAN SYSTEM
+    </button>
+
+
+    <button onclick="openStorage()">
+        STORAGE SETTINGS
+    </button>
+
+
+    <div class="footer">
+        JARVIS PHONE OPTIMIZER • NATIVE ANDROID
+    </div>
+
+</div>
+
+
+<script>
+
+function formatBytes(bytes) {
+
+    const units = [
+        "B",
+        "KB",
+        "MB",
+        "GB",
+        "TB"
+    ];
+
+    let i = 0;
+
+    let value = bytes;
+
+    while (
+        value >= 1024 &&
+        i < units.length - 1
+    ) {
+
+        value /= 1024;
+
+        i++;
+
+    }
+
+    return value.toFixed(i === 0 ? 0 : 1)
+        + " "
+        + units[i];
+}
+
+
+function scanSystem() {
+
+    if (
+        !window.Android ||
+        !Android.getSystemStats
+    ) {
+
+        document.getElementById("status")
+            .textContent = "NATIVE LINK ERROR";
+
+        return;
+    }
+
+
+    try {
+
+        const data =
+            JSON.parse(
+                Android.getSystemStats()
+            );
+
+
+        if (data.error) {
+
+            document.getElementById("status")
+                .textContent = "SCAN ERROR";
+
+            return;
+        }
+
+
+        document.getElementById("battery")
+            .textContent =
+            data.battery >= 0
+                ? data.battery.toFixed(0) + "%"
+                : "--";
+
+
+        document.getElementById("ram")
+            .textContent =
+            formatBytes(data.ramUsed);
+
+
+        document.getElementById("ramInfo")
+            .textContent =
+            formatBytes(data.ramFree)
+            + " free / "
+            + formatBytes(data.ramTotal)
+            + " total";
+
+
+        document.getElementById("storage")
+            .textContent =
+            formatBytes(data.storageUsed);
+
+
+        document.getElementById("storageInfo")
+            .textContent =
+            formatBytes(data.storageFree)
+            + " free / "
+            + formatBytes(data.storageTotal)
+            + " total";
+
+
+        document.getElementById("temperature")
+            .textContent =
+            data.temp >= 0
+                ? data.temp.toFixed(1) + " °C"
+                : "--";
+
+
+        document.getElementById("network")
+            .textContent =
+            data.network;
+
+
+        document.getElementById("status")
+            .textContent =
+            "NATIVE LINK OK";
+
+
+        document.getElementById("system")
+            .textContent =
+            "ONLINE";
+
+
+    } catch (error) {
+
+        document.getElementById("status")
+            .textContent =
+            "READ ERROR";
+
+    }
+
+}
+
+
+function updateClock() {
+
+    const now = new Date();
+
+
+    document.getElementById("date")
+        .textContent =
+        now.toLocaleDateString();
+
+
+    document.getElementById("time")
+        .textContent =
+        now.toLocaleTimeString();
+
+}
+
+
+function openStorage() {
+
+    if (
+        window.Android &&
+        Android.openStorageSettings
+    ) {
+
+        Android.openStorageSettings();
+
+    }
+
+}
+
+
+setInterval(updateClock, 1000);
+
+setInterval(scanSystem, 2000);
+
+updateClock();
+
+scanSystem();
+
+</script>
+
+</body>
+</html>
